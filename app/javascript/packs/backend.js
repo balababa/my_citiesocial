@@ -13,8 +13,7 @@ require("@rails/activestorage").start()
 import "controllers"
 
 import "styles/shared"
-import "styles/frontend"
+import "styles/backend"
 
 import "scripts/shared"
-import "scripts/frontend"
-
+import "scripts/backend"
