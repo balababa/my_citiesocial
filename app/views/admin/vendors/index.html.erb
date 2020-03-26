@@ -1,0 +1,16 @@
+  <h1 class="title">廠商列表</h1>
+
+  <%= link_to "新增廠商", new_admin_vendor_path, class:"button is-primary is-small" %>
+
+  <table class="table is-fullwidth">
+  <thead>
+    <th>名稱</th>
+    <th>說明</th>
+    <th>狀態</th>
+    <th>更新時間</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <%= render partial: "vendor", collection: @vendors%>
+  </tbody>
+  </table>

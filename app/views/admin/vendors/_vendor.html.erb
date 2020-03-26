@@ -1,0 +1,10 @@
+<tr>
+  <td><%= link_to vendor.title, edit_admin_vendor_path(vendor) %></td>
+  <td><%= strip_tags(vendor.description).truncate(100) %></td>
+  <td><%= vendor.online %></td>
+  <td><%= vendor.updated_at %></td>
+  <td>
+    <%= link_to "編輯", edit_admin_vendor_path(vendor), class: "button is-light is-small" %>
+    <%= link_to "刪除", admin_vendor_path(vendor), method: :delete, data: {confirm: "確認刪除?"}, class: "button is-danger is-small" %>
+  </td>
+</tr>
