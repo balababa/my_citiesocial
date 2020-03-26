@@ -1,5 +1,5 @@
 class Admin::VendorsController < Admin::BaseController
-  before_action :find_vendor, only: [:edit, :update]
+  before_action :find_vendor, only: [:edit, :update, :destroy]
   def index
     @vendors = Vendor.all
   end
@@ -27,6 +27,11 @@ class Admin::VendorsController < Admin::BaseController
     else
       render :edit
     end
+  end
+
+  def destroy
+    @vendor.destroy
+    redirect_to admin_vendors_path, notice: "廠商已刪除"
   end
 
   private
