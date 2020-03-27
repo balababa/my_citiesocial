@@ -37,7 +37,7 @@ class Admin::ProductsController < Admin::BaseController
 
   private
   def product_params
-    params.require(:product).permit(:name, :vendor_id, :list_price, :sell_price, :on_sell)
+    params.require(:product).permit(:name, :vendor_id, :list_price, :sell_price, :on_sell, :description)
   end
 
   def find_product
