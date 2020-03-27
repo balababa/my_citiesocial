@@ -1,3 +1,19 @@
 <h1 class="title">商品列表</h1>
 
 <%= link_to "新增商品", new_admin_product_path, class: "button" %>
+
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>商品名稱</th>
+      <th>廠商</th>
+      <th>定價 / 售價</th>
+      <th>銷售狀態</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: "product", collection: @products %>
+  </tbody>
+</table>
