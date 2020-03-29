@@ -7,6 +7,7 @@ class Api::V1::UtilsController < ApplicationController
 
 
     if sub.save
+      UserSubscribeEmailJob.perform_later(email)
       render json: {status: 'ok', email: email}
     else
       if email.empty?
