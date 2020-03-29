@@ -1,7 +1,21 @@
 class Api::V1::UtilsController < ApplicationController
   def subscribe
-    puts params[:subscribe][:email]
-    puts "-----------------"
-    render json: {status: 'ok'}
+    email =  params['subscribe']['email']
+    
+    sub = Subscribe.new(email: email)
+
+
+
+    if sub.save
+      render json: {status: 'ok', email: email}
+    else
+      if email.empty?
+        render json: {status: 'blank'}
+        
+      else
+        render json: {status: 'duplicated', email: 'email'}
+      end
+    end
+
   end
 end

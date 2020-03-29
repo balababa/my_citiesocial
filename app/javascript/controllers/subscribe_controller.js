@@ -18,8 +18,23 @@ export default class extends Controller {
       type: "post",
       dataType: 'json',
       data,
-      success: function(data) { console.log(data)},
-      error: function(data) {console.log(data)},
+      success: (response) => {
+        switch (response.status) {
+          case 'ok':
+            alert('完成訂閱');
+            this.emailTarget.value = "";
+            break;
+
+          case 'duplicated':
+            alert(`${response.email}已經訂閱過了`);
+            break;
+
+          case 'blank':
+            alert('email cannot be blank')
+            break;
+        }
+      },
+      error: function(response) {console.log(response)},
     })
   }
 }
