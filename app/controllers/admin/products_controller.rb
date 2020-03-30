@@ -2,7 +2,7 @@ class Admin::ProductsController < Admin::BaseController
   before_action :find_product, only: [:edit, :update, :destroy]
 
   def index
-    @products = Product.all.includes(:vendor)
+    @products = Product.all
   end
 
   def new
@@ -38,7 +38,7 @@ class Admin::ProductsController < Admin::BaseController
 
   private
   def product_params
-    params.require(:product).permit(:name, :vendor_id, :list_price, :sell_price, :on_sell, :description, 
+    params.require(:product).permit(:name, :vendor_id, :list_price, :sell_price, :on_sell, :description, :cover_image, :category_id,
                                     skus_attributes: [:id, :spec, :quantity, :_destroy])
   end
 
