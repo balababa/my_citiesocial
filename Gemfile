@@ -32,10 +32,6 @@ gem 'paranoia', '~> 2.1', '>= 2.1.5'
 gem 'friendly_id', '~> 5.1'
 gem 'acts_as_list', '~> 0.7.2'
 
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
@@ -60,8 +56,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 group :development, :test do
   gem 'foreman', '~> 0.86.0'
   gem 'hirb-unicode', '~> 0.0.5'
-  gem 'rspec-rails', '~> 3.9'
+  gem 'rspec-rails', '~> 4.0'
   gem 'factory_bot_rails', '~> 5.1', '>= 5.1.1'
-  gem 'faker', '~> 2.10'
+  gem 'faker', '~> 1.6', '>= 1.6.3'
   gem 'pry-rails', '~> 0.3.9'
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+
 end
