@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 2020_03_30_172557) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "category_id"
-    t.index ["category_id"], name: "index_products_on_category_id"
+      
     t.index ["code"], name: "index_products_on_code", unique: true
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
     t.index ["vendor_id"], name: "index_products_on_vendor_id"
