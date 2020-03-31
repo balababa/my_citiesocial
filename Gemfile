@@ -58,7 +58,7 @@ group :development, :test do
   gem 'hirb-unicode', '~> 0.0.5'
   gem 'rspec-rails', '~> 4.0'
   gem 'factory_bot_rails', '~> 5.1', '>= 5.1.1'
-  gem 'faker', '~> 1.6', '>= 1.6.3'
+  gem 'faker', '~> 1.6', '>= 1.6.3', require: false
   gem 'pry-rails', '~> 0.3.9'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 
