@@ -2,18 +2,18 @@ require 'rails_helper'
 require 'faker'
 
 RSpec.describe Cart, type: :model do
+
+  let(:cart) { Cart.new }
+
   describe "基本功能" do
     it "可以把商品丟到到購物車裡，然後購物車裡就有東西了" do
-      cart = Cart.new
-
       cart.add_item(1)
       
-      expect(cart.empty?).to be false
+      # expect(cart.empty?).to be false
+      expect(cart).not_to be_empty
     end
     
     it "如果加了相同種類的商品到購物車裡，購買項目（CartItem）並不會增加，但商品的數量會改變" do
-      cart = Cart.new
-
       3.times { cart.add_item(1) }
       2.times { cart.add_item(2) }
       cart.add_item(3)
@@ -23,7 +23,6 @@ RSpec.describe Cart, type: :model do
     end
     
     it "商品可以放到購物車裡，也可以再拿出來" do
-      cart = Cart.new
       p1 = FactoryBot.create(:product)
       
       cart.add_item(p1.id)
@@ -33,7 +32,6 @@ RSpec.describe Cart, type: :model do
 
 
     it "可以計算整台購物車的總消費金額" do
-      cart = Cart.new
       p1 = FactoryBot.create(:product, sell_price: 5)
       p2 = FactoryBot.create(:product, sell_price: 10)
   
@@ -44,7 +42,6 @@ RSpec.describe Cart, type: :model do
     end
 
     it "特別活動可搭配折扣（例如聖誕節的時候全面打 9 折，或是滿額滿千送百或滿額免運費）" do
-      cart = Cart.new
       p1 = FactoryBot.create(:product, sell_price: 10)
       p2 = FactoryBot.create(:product, sell_price: 10)
   
@@ -60,38 +57,30 @@ RSpec.describe Cart, type: :model do
 
   describe "進階功能" do
     it "可以將購物車內容轉換成 Hash 並存到 Session 裡" do
-      cart = Cart.new
       p1 = FactoryBot.create(:product)
       p2 = FactoryBot.create(:product)
   
       3.times { cart.add_item(p1.id) }
       2.times { cart.add_item(p2.id) }
 
-      cart_hash = {
-        "items" => [
-          {"product_id" => 1, "quantity" => 3},
-          {"product_id" => 2, "quantity" => 2}
-        ]
-      }
-
       expect(cart.to_hash).to eq cart_hash
     end
 
     it "也可以存放在 Session 的內容（Hash 格式），還原成購物車的內容" do
-      cart = Cart.new
-      cart_hash = {
+      cart = Cart.from_hash(cart_hash)
+
+      expect(cart.items.first.quantity).to be 3
+      expect(cart.items.second.quantity).to be 2
+    end
+    
+    private
+    def cart_hash
+      {
         "items" => [
           {"product_id" => 1, "quantity" => 3},
           {"product_id" => 2, "quantity" => 2}
         ]
       }
-
-      cart.from_hash(cart_hash)
-
-      expect(cart.items.first.quantity).to be 3
-      expect(cart.items.second.quantity).to be 2
-
     end
- 
   end
 end
