@@ -59,5 +59,39 @@ RSpec.describe Cart, type: :model do
   end
 
   describe "進階功能" do
+    it "可以將購物車內容轉換成 Hash 並存到 Session 裡" do
+      cart = Cart.new
+      p1 = FactoryBot.create(:product)
+      p2 = FactoryBot.create(:product)
+  
+      3.times { cart.add_item(p1.id) }
+      2.times { cart.add_item(p2.id) }
+
+      cart_hash = {
+        "items" => [
+          {"product_id" => 1, "quantity" => 3},
+          {"product_id" => 2, "quantity" => 2}
+        ]
+      }
+
+      expect(cart.to_hash).to eq cart_hash
+    end
+
+    it "也可以存放在 Session 的內容（Hash 格式），還原成購物車的內容" do
+      cart = Cart.new
+      cart_hash = {
+        "items" => [
+          {"product_id" => 1, "quantity" => 3},
+          {"product_id" => 2, "quantity" => 2}
+        ]
+      }
+
+      cart.from_hash(cart_hash)
+
+      expect(cart.items.first.quantity).to be 3
+      expect(cart.items.second.quantity).to be 2
+
+    end
+ 
   end
 end

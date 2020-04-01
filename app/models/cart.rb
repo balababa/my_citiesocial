@@ -25,4 +25,18 @@ class Cart
     (Date.today.day == 25 && Date.today.month == 12) ? total * 0.9 : total
   end
 
+  def to_hash
+    items = @items.map { |item| {"product_id" => item.product_id, 
+                                "quantity" => item.quantity} }
+    
+    {
+      "items" => items
+    }
+  end
+
+  def from_hash(cart_hash)
+    @items = cart_hash["items"].map { |item|
+      CartItem.new(item["product_id"], item["quantity"]) }
+  end
+
 end

@@ -62,4 +62,5 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.9'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'timecop', '~> 0.8.1'
+  gem 'database_cleaner', '~> 1.5', '>= 1.5.3'
 end
