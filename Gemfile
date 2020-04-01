@@ -61,5 +61,5 @@ group :development, :test do
   gem 'faker', '~> 1.6', '>= 1.6.3', require: false
   gem 'pry-rails', '~> 0.3.9'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-
+  gem 'timecop', '~> 0.8.1'
 end

@@ -18,5 +18,11 @@ class Cart
     @items.empty?
   end
 
- 
+  def total_price
+    # items.map {|item| item.total_price}.sum
+    # items.map {|item| item.total_price}.reduce(:+)
+    total = items.reduce(0) { |sum, item| sum += item.total_price }
+    (Date.today.day == 25 && Date.today.month == 12) ? total * 0.9 : total
+  end
+
 end
