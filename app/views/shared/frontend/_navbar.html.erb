@@ -31,9 +31,9 @@
       <div class="navbar-item">
         <div class="buttons">
           <% if user_signed_in? %>
-          <div class="navbar-item">
+          <div class="navbar-item" data-controller="cart">
             <i class="fas fa-shopping-cart"></i>
-            (<span id="itemNumber"><%= current_cart.items.count %></span>)
+            <span data-action="addToCart@document->cart#updateCart" data-target=cart.count>(<%= current_cart.items.count %>)</span>
             
           </div>
             <div class="navbar-item has-dropdown is-hoverable">
