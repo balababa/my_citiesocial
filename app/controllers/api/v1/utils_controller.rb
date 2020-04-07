@@ -22,7 +22,7 @@ class Api::V1::UtilsController < ApplicationController
     product = Product.friendly.find(params[:id])
     
     if product 
-      current_cart.add_item(product.code, params[:quantity])
+      current_cart.add_item(product.code, params[:quantity].to_i)
 
       session[:cart_9527] = current_cart.to_hash
 
