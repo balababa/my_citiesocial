@@ -1,0 +1,16 @@
+order
+  - num
+  - recipient
+  - tel
+  - address
+  - note:text
+  - user:belongs_to
+  - state default:pending
+  - transaction_id 
+rails g model Order num recipient tel address note:text user:belongs_to paid_at:datetime transaction_id
+
+OrderItem
+  - order_id:belongs_to
+  - sku:belongs_to
+  - quantity: integer
+rails g model OrderItem order:belongs_to sku:belongs_to quantity:integer 
