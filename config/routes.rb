@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :show]
   resources :categories, only: [:show]
+  resource :orders, except: [:new, :edit, :update, :destroy ]
 
   resource :cart, only: [:show, :destroy] do
     get :checkout
