@@ -9,21 +9,39 @@ class OrdersController < ApplicationController
     end
 
     if @order.save 
+      nonce = SecureRandom.uuid
+      uri = "/v3/payments/request"
 
-      resp = Faraday.post("#{ENV['line_pay_endpoint']}/v2/payments/request") do |req|
+      body = {
+        amount: current_cart.total_price.to_i,
+        currency: 'TWD',
+        orderId: @order.num,
+        packages: [
+          {
+            id: @order.num,
+            amount: current_cart.total_price.to_i,
+            name: 'my_citiesocial',
+            products: products_hash
+          }
+        ],
+        redirectUrls: {
+          confirmUrl: "http://localhost:5000/orders/confirm",
+          cancelUrl: 'http://localhost:5000/orders/cancel'
+        }
+      }.to_json
+ 
+
+      resp = Faraday.post("#{ENV['line_pay_endpoint']}#{uri}") do |req|
         req.headers['Content-Type'] = 'application/json'
         req.headers['X-LINE-ChannelId'] = ENV['line_channel_id']
-        req.headers['X-LINE-ChannelSecret'] = ENV['line_channel_secret_key']
-        req.body = {
-          productName: 'salmon', 
-          amount: current_cart.total_price.to_i, 
-          currency: "TWD", 
-          confirmUrl: "http://localhost:5000/orders/confirm", 
-          orderId:  @order.num
-        }.to_json
+        req.headers['X-LINE-Authorization-Nonce'] = nonce
+        req.headers['X-LINE-Authorization'] = hmac(ENV['line_channel_secret_key'], uri, body, nonce)
+
+        req.body = body
       end
       
       result = JSON.parse(resp.body)
+  
 
       
       if result["returnCode"] == "0000"
@@ -31,30 +49,37 @@ class OrdersController < ApplicationController
         redirect_to payment_url
       else
         flash[:notice] = "付款失敗"
-        redner 'carts/checkout'
+        render 'carts/checkout'
       end
     else
       render 'carts/checkout'
     end
   end
 
+
+
   def confirm
-    resp = Faraday.post("#{ENV['line_pay_endpoint']}/v2/payments/#{params[:transactionId]}/confirm") do |req|
+    nonce = SecureRandom.uuid
+    uri = "/v3/payments/#{params[:transactionId]}/confirm"
+    body = {
+      amount: current_cart.total_price.to_i, 
+      currency: "TWD"
+    }.to_json
+
+    resp = Faraday.post("#{ENV['line_pay_endpoint']}#{uri}") do |req|
       req.headers['Content-Type'] = 'application/json'
       req.headers['X-LINE-ChannelId'] = ENV['line_channel_id']
-      req.headers['X-LINE-ChannelSecret'] = ENV['line_channel_secret_key']
+      req.headers['X-LINE-Authorization-Nonce'] = nonce
+      req.headers['X-LINE-Authorization'] = hmac(ENV['line_channel_secret_key'], uri, body, nonce)
 
-      req.body = {
-        amount: current_cart.total_price.to_i, 
-        currency: "TWD"
-      }.to_json
+      req.body = body
     end
 
     result = JSON.parse(resp.body)
-    puts "---------------------"
+    puts "-------------"
 
-    puts(result)
-    puts "---------------------"
+    puts result
+    puts "-------------"
     if result["returnCode"] == "0000"
       order_id = result["info"]["orderId"]
       transaction_id = result["info"]["transactionId"]
@@ -76,5 +101,20 @@ class OrdersController < ApplicationController
   private
   def order_params
     params.require(:order).permit(:recipient, :tel, :address, :note)
+  end
+
+  def products_hash
+    current_cart.items.map do |item|
+      { 
+        name: item.product.name + " - " + item.sku.spec,
+        quantity: item.quantity,
+        price: item.total_price.to_i
+      }
+    end
+  end
+
+  def hmac(secret, uri, req_body, nonce)
+    data = secret + uri + req_body + nonce
+    Base64.encode64(OpenSSL::HMAC.digest("SHA256", secret, data)).strip()
   end
 end
