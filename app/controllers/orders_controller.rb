@@ -9,6 +9,20 @@ class OrdersController < ApplicationController
     end
 
     if @order.save 
+
+      resp = Faraday.post("#{ENV['line_pay_endpoint']}/v2/payments/request") do |req|
+        req.headers['Content-Type'] = 'application/json'
+        req.headers['X-LINE-ChannelId'] = ENV['line_channel_id']
+        req.headers['X-LINE-ChannelSecret'] = ENV['line_channel_secret_key']
+        req.body = {
+          productName: 'salmon', 
+          amount: current_cart.total_price.to_i, 
+          currency: "TWD", 
+          confirmUrl: "http://localhost:3000/orders/confirm", 
+          orderId:  @order.num
+        }.to_json
+      end
+      console.log(resp.headers)
       redirect_to root_path, notice: "ok"
     else
       render 'carts/checkout'
