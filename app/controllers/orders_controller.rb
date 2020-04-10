@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
   end
 
   def confirm
-    resp = Faraday.post("#{ENV['line_pay_endpoint']}/v2/payments/#{id}/confirm") do |req|
+    resp = Faraday.post("#{ENV['line_pay_endpoint']}/v2/payments/#{params[:transactionId]}/confirm") do |req|
       req.headers['Content-Type'] = 'application/json'
       req.headers['X-LINE-ChannelId'] = ENV['line_channel_id']
       req.headers['X-LINE-ChannelSecret'] = ENV['line_channel_secret_key']
@@ -51,9 +51,21 @@ class OrdersController < ApplicationController
     end
 
     result = JSON.parse(resp.body)
+    puts "---------------------"
 
-    if result[:returnCode] == "0000"
-    
+    puts(result)
+    puts "---------------------"
+    if result["returnCode"] == "0000"
+      order_id = result["info"]["orderId"]
+      transaction_id = result["info"]["transactionId"]
+      
+      # 變更order狀態
+      order = current_user.orders.find_by(num: order_id)
+      order.pay!(transaction_id: transaction_id)
+
+      # 清空購物車
+      session[:cart_9527] = nil
+
       redirect_to root_path, notice: "付款已完成"
     else
       redirect_to root_path, notice: "付款失敗"
