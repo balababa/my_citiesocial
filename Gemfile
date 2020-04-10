@@ -32,6 +32,7 @@ gem 'paranoia', '~> 2.1', '>= 2.1.5'
 gem 'friendly_id', '~> 5.1'
 gem 'acts_as_list', '~> 0.7.2'
 gem 'faraday', '~> 0.9.2'
+gem 'aasm', '~> 4.11'
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
