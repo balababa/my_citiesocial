@@ -18,15 +18,28 @@ class OrdersController < ApplicationController
           productName: 'salmon', 
           amount: current_cart.total_price.to_i, 
           currency: "TWD", 
-          confirmUrl: "http://localhost:3000/orders/confirm", 
+          confirmUrl: "http://localhost:5000/orders/confirm", 
           orderId:  @order.num
         }.to_json
       end
-      console.log(resp.headers)
-      redirect_to root_path, notice: "ok"
+      
+      result = JSON.parse(resp.body)
+
+      
+      if result["returnCode"] == "0000"
+        payment_url = result["info"]["paymentUrl"]["web"]
+        redirect_to payment_url
+      else
+        flash[:notice] = "付款失敗"
+        redner 'carts/checkout'
+      end
     else
       render 'carts/checkout'
     end
+  end
+
+  def confirm
+    render json:params[:transactionId]
   end
 
   private
