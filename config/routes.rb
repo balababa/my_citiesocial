@@ -4,8 +4,14 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :show]
   resources :categories, only: [:show]
-  resource :orders, except: [:new, :edit, :update, :destroy ] do 
-    get 'confirm'
+  resources :orders, except: [:new, :edit, :update, :destroy ] do 
+    get 'confirm', on: :collection
+    
+    member do
+      delete 'cancel'
+      post 'pay'
+      get 'pay_confirm'
+    end
   end
 
   resource :cart, only: [:show, :destroy] do
