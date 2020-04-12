@@ -14,29 +14,10 @@ class OrdersController < ApplicationController
     end
 
     if @order.save 
-
-      body = {
-        amount: @order.total_price.to_i,
-        currency: 'TWD',
-        orderId: @order.num,
-        packages: [
-          {
-            id: @order.num,
-            amount: @order.total_price.to_i,
-            name: 'my_citiesocial',
-            products: products_hash(@order)
-          }
-        ],
-        redirectUrls: {
-          confirmUrl: "http://localhost:5000/orders/confirm",
-          cancelUrl: 'http://localhost:5000/orders/cancel'
-        }
-      }.to_json
-
-      result = faraday_post(body, "/v3/payments/request")  
-
+      service = LinepayService.new(type: 'request', order: @order)
+      service.perform()
       
-      if result["returnCode"] == "0000"
+      if service.success?
         payment_url = result["info"]["paymentUrl"]["web"]
         redirect_to payment_url
       else
@@ -50,14 +31,10 @@ class OrdersController < ApplicationController
 
 
   def confirm
-    body = {
-      amount: current_cart.total_price.to_i, 
-      currency: "TWD"
-    }.to_json
+    service = LinepayService.new(cart: current_cart, type: 'confirm')
+    service.perform(params[:transactionId])
 
-    result = faraday_post(body, "/v3/payments/#{params[:transactionId]}/confirm") 
-
-    if result["returnCode"] == "0000"
+    if service.success?
       order_id = result["info"]["orderId"]
       transaction_id = result["info"]["transactionId"]
       
@@ -70,18 +47,18 @@ class OrdersController < ApplicationController
 
       redirect_to root_path, notice: "付款已完成"
     else
+
       redirect_to root_path, notice: "付款失敗"
     end
   end
 
-
   def cancel
     if @order.paid?
-      body = {}.to_json
+ 
+      service = LinepayService.new(type: 'cancel')
+      service.perform( @order.transaction_id)
 
-      result = faraday_post(body, "/v3/payments/#{@order.transaction_id}/refund") 
-      
-      if result["returnCode"] == "0000"
+      if service.success?
         @order.cancel!
         redirect_to orders_path, notice: "訂單 #{@order.num} 已取消，並完成退款"  
       else
@@ -94,29 +71,11 @@ class OrdersController < ApplicationController
     end
   end
 
-
   def pay
-    body = {
-        amount: @order.total_price.to_i,
-        currency: 'TWD',
-        orderId: @order.num,
-        packages: [
-          {
-            id: @order.num,
-            amount: @order.total_price.to_i,
-            name: 'my_citiesocial',
-            products: products_hash(@order)
-          }
-        ],
-        redirectUrls: {
-          confirmUrl: "http://localhost:5000/orders/#{@order.id}/pay_confirm",
-          cancelUrl: 'http://localhost:5000/orders/cancel'
-        }
-      }.to_json
- 
-      result = faraday_post(body, "/v3/payments/request") 
+      service = LinepayService.new(type: 'pay', order: @order)
+      service.perform()
 
-      if result["returnCode"] == "0000"
+      if serivce.success?
         payment_url = result["info"]["paymentUrl"]["web"]
         redirect_to payment_url
       else
@@ -125,14 +84,11 @@ class OrdersController < ApplicationController
   end
 
   def pay_confirm
-    body = {
-      amount: @order.total_price, 
-      currency: "TWD"
-    }.to_json
 
-    result = faraday_post(body, "/v3/payments/#{params[:transactionId]}/confirm") 
+    service = LinepayService.new(type: 'pay_confirm', order: @order)
+    service.perform(params[:transactionId]) 
 
-    if result["returnCode"] == "0000"
+    if service.success?
       transaction_id = result["info"]["transactionId"]
       
       # 變更order狀態
@@ -164,21 +120,4 @@ class OrdersController < ApplicationController
     end
   end
 
-  def faraday_post(body, uri)
-    nonce = SecureRandom.uuid
-    resp = Faraday.post("#{ENV['line_pay_endpoint']}#{uri}") do |req|
-      req.headers['Content-Type'] = 'application/json'
-      req.headers['X-LINE-ChannelId'] = ENV['line_channel_id']
-      req.headers['X-LINE-Authorization-Nonce'] = nonce
-      req.headers['X-LINE-Authorization'] = hmac(ENV['line_channel_secret_key'], uri, body, nonce)
-
-      req.body = body
-    end
-    JSON.parse(resp.body)
-  end
-
-  def hmac(secret, uri, req_body, nonce)
-    data = secret + uri + req_body + nonce
-    Base64.encode64(OpenSSL::HMAC.digest("SHA256", secret, data)).strip()
-  end
 end
