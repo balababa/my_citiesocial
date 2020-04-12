@@ -1,9 +1,11 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_order, only:[:pay, :pay_confirm, :cancel]
+  include Pagy::Backend
 
   def index
-    @orders = current_user.orders.order(id: :desc)
+    # @orders = current_user.orders.order(id: :desc)
+    @pagy, @orders= pagy(current_user.orders.order(id: :desc),  items: 20)
   end
 
   def create
