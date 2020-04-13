@@ -7,4 +7,9 @@ class ProductsController < ApplicationController
   def show
     @product = Product.friendly.find(params[:id])
   end
+
+  def search
+    keyword = params[:keyword]
+    @products = Product.where('name ~ ?', "\d*#{keyword}\d*")
+  end
 end

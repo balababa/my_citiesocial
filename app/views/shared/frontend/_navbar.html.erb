@@ -16,13 +16,14 @@
     <div class="navbar-start">
 
       <div class="navbar-item field has-addons">
+   
         <div class="control">
-          <input class="input" type="text" placeholder="輸入關鍵字">
+          <%= form_with url: search_products_path, id: "search_form", method: :get, local: true do |form| %>
+            <%= form.text_field :keyword, class: "input", placeholder:"輸入關鍵字" %>
+          <% end %>
         </div>
         <div class="control">
-          <a class="button is-primary">
-            <i class="fas fa-search"></i>&nbsp; 搜尋
-          </a>
+          <%= link_to '搜尋', "", class: "button is-primary", :onclick => "document.querySelector('#search_form').submit()" %>
         </div>
       </div>
     </div>

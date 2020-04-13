@@ -1,0 +1,9 @@
+<% unless @products.empty? %>
+  <%= render "shared/frontend/product_list", products:@products %>
+<% else %>
+<section class="section">
+  <section class="container">
+    <h1 class="title">查無商品</h1>
+  </section>
+</section>
+<% end %>
