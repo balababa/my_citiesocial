@@ -1,9 +1,12 @@
 <section class="container">
   <h1 class="title">購物車
   <%= link_to cart_path, method: :delete, data: { confirm: "確定清空購物車?"}, class:"is-size-5"  do %>
-<i class="far fa-trash-alt"></i>
-<span >清空購物車</span>
-<% end %>
+  
+    <% unless current_cart.items.empty? %>
+      <i class="far fa-trash-alt"></i>
+      <span >清空購物車</span>
+    <% end %>
+  <% end %>
   </h1>
 
   <%= render partial: "cart" %>

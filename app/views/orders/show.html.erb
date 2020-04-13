@@ -1,0 +1,34 @@
+<section class="section">
+  <section class="container">
+    <h1 class="title">訂單<%= @order.num %> <span class="has-text-grey"><%= @order.state %></span></h1>
+    <%= link_to "回訂單列表", orders_path, class: "button" %>
+    <%= link_to "付款", pay_order_path(@order), method: :post, data: { confirm: "確認付款?"}, class:"button is-primary " if @order.may_pay? %>
+    <%= link_to "取消", cancel_order_path(@order), method: :delete, class:"button is-danger ", data: { confirm: "確認取消訂單?\n如果已付款將會進行退費"} if @order.may_cancel? %>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>品項</th>
+          <th>單價</th>
+          <th>數量</th>
+          <th>小計</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @order.order_items.each do |item| %>
+          <tr>
+            <td><%= link_to item.sku.product do %><%= item.sku.product.name %> - <%= item.sku.spec %><% end %></td>
+            <td><%= item.sku.product.sell_price %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.total_price %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">總價</td>
+          <td ><%= @order.total_price %></td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</section>

@@ -1,11 +1,14 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_order, only:[:pay, :pay_confirm, :cancel]
+  before_action :find_order, only:[:show, :pay, :pay_confirm, :cancel]
   include Pagy::Backend
 
   def index
     # @orders = current_user.orders.order(id: :desc)
     @pagy, @orders= pagy(current_user.orders.order(id: :desc),  items: 20)
+  end
+
+  def show
   end
 
   def create
@@ -17,7 +20,7 @@ class OrdersController < ApplicationController
 
     if @order.save 
       service = LinepayService.new(type: 'request', order: @order)
-      service.perform()
+      result = service.perform()
       
       if service.success?
         payment_url = result["info"]["paymentUrl"]["web"]
@@ -34,7 +37,7 @@ class OrdersController < ApplicationController
 
   def confirm
     service = LinepayService.new(cart: current_cart, type: 'confirm')
-    service.perform(params[:transactionId])
+    result = service.perform(params[:transactionId])
 
     if service.success?
       order_id = result["info"]["orderId"]
@@ -58,7 +61,7 @@ class OrdersController < ApplicationController
     if @order.paid?
  
       service = LinepayService.new(type: 'cancel')
-      service.perform( @order.transaction_id)
+      result = service.perform( @order.transaction_id)
 
       if service.success?
         @order.cancel!
@@ -75,9 +78,9 @@ class OrdersController < ApplicationController
 
   def pay
       service = LinepayService.new(type: 'pay', order: @order)
-      service.perform()
+      result = service.perform()
 
-      if serivce.success?
+      if service.success?
         payment_url = result["info"]["paymentUrl"]["web"]
         redirect_to payment_url
       else
@@ -88,7 +91,7 @@ class OrdersController < ApplicationController
   def pay_confirm
 
     service = LinepayService.new(type: 'pay_confirm', order: @order)
-    service.perform(params[:transactionId]) 
+    result = service.perform(params[:transactionId]) 
 
     if service.success?
       transaction_id = result["info"]["transactionId"]
