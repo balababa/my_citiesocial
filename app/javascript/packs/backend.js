@@ -20,4 +20,4 @@ import "styles/backend"
 
 import "scripts/shared"
 import "scripts/backend"
-
+import 'trix'

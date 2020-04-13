@@ -37,9 +37,9 @@ class LinepayService
 
   def body_request
     if @type == 'request'
-      uri = "http://localhost:5000/orders/confirm"
+      uri = "#{ENV['local']}/orders/confirm"
     else
-      uri = "http://localhost:5000/orders/#{@order.id}/pay_confirm"
+      uri = "#{ENV['local']}/orders/#{@order.id}/pay_confirm"
     end
     
     {
@@ -56,7 +56,7 @@ class LinepayService
       ],
       redirectUrls: {
         confirmUrl: uri,
-        cancelUrl: 'http://localhost:5000/orders/cancel'
+        cancelUrl: "#{ENV['local']}/orders/cancel"
       }
     }.to_json
   end
