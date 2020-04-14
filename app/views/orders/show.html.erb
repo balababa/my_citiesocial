@@ -4,6 +4,32 @@
     <%= link_to "回訂單列表", orders_path, class: "button" %>
     <%= link_to "付款", pay_order_path(@order), method: :post, data: { confirm: "確認付款?"}, class:"button is-primary " if @order.may_pay? %>
     <%= link_to "取消", cancel_order_path(@order), method: :delete, class:"button is-danger ", data: { confirm: "確認取消訂單?\n如果已付款將會進行退費"} if @order.may_cancel? %>
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label">收件人</label>
+          <input class="input" value="<%= @order.recipient%>" disabled="disabled">
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label class="label">地址</label>
+          <input class="input" value="<%= @order.address%>" disabled="disabled">
+
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label class="label">電話</label>
+          <input class="input" value="<%= @order.tel %>" disabled="disabled">
+
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">備註說明</label>
+      <textarea class="textarea" disabled="disabled"><%= @order.note %></textarea>
+    </div>
     <table class="table is-fullwidth">
       <thead>
         <tr>
