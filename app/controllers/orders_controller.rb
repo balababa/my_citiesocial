@@ -15,10 +15,12 @@ class OrdersController < ApplicationController
     @order = current_user.orders.build(order_params)
     
     current_cart.items.each do |item|
-      @order.order_items.build(sku_id: item.sku_id, quantity: item.quantity)
+      @order.order_items.build(sku_id: item.sku_id, quantity: item.quantity) unless item.quantity.zero?
     end
 
-    if @order.save 
+    
+
+    if (not @order.order_items.empty?) && @order.save 
       service = LinepayService.new(type: 'request', order: @order)
       result = service.perform()
       
@@ -26,10 +28,13 @@ class OrdersController < ApplicationController
         payment_url = result["info"]["paymentUrl"]["web"]
         redirect_to payment_url
       else
+   
+
         flash[:notice] = "付款失敗"
         render 'carts/checkout'
       end
     else
+
       render 'carts/checkout'
     end
   end
@@ -84,6 +89,7 @@ class OrdersController < ApplicationController
         payment_url = result["info"]["paymentUrl"]["web"]
         redirect_to payment_url
       else
+
         redirect_to orders_path, notice: "付款發生錯誤"
       end
   end
