@@ -10,6 +10,6 @@ class ProductsController < ApplicationController
 
   def search
     keyword = params[:keyword]
-    @products = Product.on_sell.where('name ~ ?', "\d*(#{keyword}|#{keyword.swapcase})\d*")
+    @products = Product.on_sell.search(keyword)
   end
 end

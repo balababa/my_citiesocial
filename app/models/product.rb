@@ -4,6 +4,11 @@ class Product < ApplicationRecord
   has_rich_text :description
   has_one_attached :cover_image
   scope :on_sell, -> { where( on_sell: true).order(updated_at: :desc) }
+  scope :search, ->(keyword) {
+    key = keyword.split('').map {|c| "[#{c}#{c.swapcase}]"}.join
+    reg = "\d*#{key}\d*"
+    where('name ~ ?', reg)
+  }
 
   validates :code, uniqueness: true
   validates :name, presence: true
