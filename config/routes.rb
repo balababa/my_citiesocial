@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post 'subscribe', to: 'utils#subscribe'
       post 'cart', to: 'utils#cart'
+      post 'change_item_num', to: 'utils#change_item_num'
     end
   end
 end

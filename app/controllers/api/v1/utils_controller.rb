@@ -30,4 +30,20 @@ class Api::V1::UtilsController < ApplicationController
       render json: {status: 'ok', items: current_cart.items.count }
     end
   end
+
+  def change_item_num
+    offset = params["offset"].to_i
+    sku_id = params["sku_id"]
+    cart_item = current_cart.items.find {|item| item.sku_id == sku_id}
+
+    if cart_item
+      result = cart_item.increment!(offset)
+      session[:cart_9527] = current_cart.to_hash
+
+      render json: {num:  result, sum: cart_item.total_price, total: current_cart.total_price }
+    else
+      render json: {status: "cannot find cart_item"}
+    end
+
+  end
 end
