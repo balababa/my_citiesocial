@@ -1,15 +1,15 @@
 class ProductsController < ApplicationController
 
   def index
-    @products = Product.order(updated_at: :desc).includes(:vendor)
+    @products = Product.on_sell.includes(:vendor)
   end
 
   def show
-    @product = Product.friendly.find(params[:id])
+    @product = Product.on_sell.friendly.find(params[:id])
   end
 
   def search
     keyword = params[:keyword]
-    @products = Product.where('name ~ ?', "\d*#{keyword}\d*")
+    @products = Product.on_sell.where('name ~ ?', "\d*(#{keyword}|#{keyword.swapcase})\d*")
   end
 end

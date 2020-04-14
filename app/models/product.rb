@@ -3,7 +3,7 @@ class Product < ApplicationRecord
   acts_as_paranoid
   has_rich_text :description
   has_one_attached :cover_image
-
+  scope :on_sell, -> { where( on_sell: true).order(updated_at: :desc) }
 
   validates :code, uniqueness: true
   validates :name, presence: true
