@@ -9,7 +9,6 @@ class Admin::CategoriesController < Admin::BaseController
   end
 
   def create
-    puts params
     @category = Category.new(category_params)
 
     if @category.save

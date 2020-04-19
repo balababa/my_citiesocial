@@ -120,15 +120,5 @@ class OrdersController < ApplicationController
   def order_params
     params.require(:order).permit(:recipient, :tel, :address, :note)
   end
-  
-  def products_hash(order)
-    order.order_items.map do |item|
-      {
-        name: item.sku.product.name + " - " + item.sku.spec,
-        quantity: item.quantity,
-        price: item.total_price.to_i
-      }
-    end
-  end
 
 end
