@@ -32,6 +32,7 @@ The setups steps expect following tools installed on the system.
 *  [rspec-rails](https://github.com/rspec/rspec-rails): Testing library
 *  [faker](https://github.com/faker-ruby/faker): Library for generating fake data
 *  [timecop](https://github.com/travisjeffery/timecop): Gem for simulating system time
+*  [trix](https://github.com/basecamp/trix): WYSIWYG editor made by basecamp
 ## Installation
 
 ### 1. Check out the repository
