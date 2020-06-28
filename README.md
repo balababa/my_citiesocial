@@ -35,7 +35,7 @@ The setups steps expect following tools installed on the system.
 *  [trix](https://github.com/basecamp/trix): WYSIWYG editor made by basecamp
 ## Installation
 
-### 1. Check out the repository
+### 1. Clone the repository
 
 ```bash
 git clone git@github.com:balababa/my_citiesocial.git
