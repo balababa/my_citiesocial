@@ -13,7 +13,7 @@ The setups steps expect following tools installed on the system.
 - NodeJs
 - Postgresql
 
-## Packages / Toos
+## Packages / Tools
 * [devise](https://github.com/heartcombo/devise): Framework for authentication and easily generating member system
 * [Bulma](https://github.com/jgthms/bulma): CSS framework
 * [AASM](https://github.com/aasm/aasm): State machine, make model fat and controller skinny by defining state and event in models.
